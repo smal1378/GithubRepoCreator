@@ -7,6 +7,40 @@ _desc = ""  # same
 keyring_service_name = "PythonRepoCreator"
 
 
+class LogConsole:
+    def __init__(self, max_size: int = 1000):
+        self.lst = [None] * 1000  # this list can be optimized using a Queue implemented with a linked list
+        self.pointer = 0
+        self.callbacks = []
+
+    def get_log(self, count: int = 100):
+        x = 0
+        for i in range(self.pointer, -1, -1):
+            if x > i:
+                return
+            yield self.lst[i]
+
+    def log(self, module: str = "Default", message: str = "N/A"):
+        if self.pointer >= len(self.lst):  # out of space
+            self.pointer -= 1
+            self.lst.pop(0)
+        self.lst[self.pointer] = (module, message)
+        for i in self.callbacks:
+            i((module, message))
+
+    def attach_callback(self, callback) -> int:
+        """
+        Will call the callback whenever a new log message has been added.
+        :param callback: callback(Tuple[str, str]), Tuple contains module name and message text
+        :return: callback id.
+        """
+        self.callbacks.append(callback)
+        return len(self.callbacks) - 1
+
+    def detach_callback(self, _id: int):
+        self.callbacks.pop(_id)
+
+
 class RepoCreator:
     def __init__(self):
         self.token = None
