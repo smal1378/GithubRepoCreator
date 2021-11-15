@@ -88,3 +88,6 @@ class RepoCreator:
 
     def has_token(self):
         return bool(self.token)
+
+
+logger = LogConsole()  # global object that every one use it
