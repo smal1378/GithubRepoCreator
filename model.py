@@ -79,12 +79,13 @@ class RepoCreator:
         try:
             self.token = get_password(keyring_service_name, "Token")
         except InitError as err:
-            # TODO: Log In Console
-            pass
+            logger.log("TokenManager", f"Access to keyring denied."
+                                       f"\n{repr(err)}")
 
     def set_token(self, token: str):
         self.token = token
         set_password(keyring_service_name, "Token", token)
+        logger.log("TokenManager", "New token has been set.")
 
     def has_token(self):
         return bool(self.token)
