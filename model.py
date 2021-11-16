@@ -158,3 +158,23 @@ class NameGeneratorMother:
         :return: a generator that contains tuples of 'name' and 'description'
         """
         raise NotImplemented
+
+
+class DSNameGenerator(NameGeneratorMother):
+    name = "Data Structure Template"
+    entries = [("Start", "An integer that numbering starts from"),
+               ("Test", "Test number")]
+
+    # noinspection PyMissingConstructor
+    def __init__(self, **kwargs):
+        self.start = int(kwargs["Start"])
+        self.test = int(kwargs["Test"])
+
+    def generate(self) -> Generator[Tuple[str, str]]:
+        x = self.start
+        t = self.test
+        while True:
+            name = f"G{'0' * (2-len(str(x)))}{x}T{t}"
+            desc = f"Data Structures - Group {'0' * (2-len(str(x)))}{x} - Test {t}"
+            yield name, desc
+            x += 1
