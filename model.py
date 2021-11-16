@@ -3,6 +3,7 @@ from github.GithubException import UnknownObjectException
 from keyring import set_password, get_password
 from keyring.errors import InitError
 from typing import List, Optional, Tuple, Callable, Generator
+from os.path import exists
 
 
 class LogConsole:
@@ -99,6 +100,27 @@ class TokenManagerKeyring(TokenManagerMother):
 
     def has_token(self, name: str = "Default") -> bool:
         return bool(self.token)
+
+
+class TokenManagerText(TokenManagerMother):
+    def __init__(self):
+        self.token = None
+        self.load_token()
+
+    def load_token(self, name: str = "Default") -> str:
+        if self.token:
+            return self.token
+        with open("token.txt") as f:
+            self.token = f.read()
+        return self.token
+
+    def set_token(self, token: str, name: str = "Default") -> None:
+        with open("token.txt") as f:
+            f.write(token)
+        self.token = token
+
+    def has_token(self, name: str = "Default") -> bool:
+        return self.token or exists("token.txt")
 
 
 class NameGeneratorMother:
