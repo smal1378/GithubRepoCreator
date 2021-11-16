@@ -6,14 +6,14 @@ from keyring.errors import InitError
 
 class LogConsole:
     def __init__(self, max_size: int = 1000):
-        self.lst = [None] * 1000  # this list can be optimized using a Queue implemented with a linked list
+        self.lst = [None] * max_size  # this list can be optimized using a Queue implemented with a linked list
         self.pointer = 0
         self.callbacks = []
 
     def get_log(self, count: int = 100):
         x = 0
         for i in range(self.pointer, -1, -1):
-            if x > i:
+            if i + 1 >= count:
                 return
             yield self.lst[i]
 
