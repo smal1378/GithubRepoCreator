@@ -42,41 +42,6 @@ class LogConsole:
         self.callbacks.pop(_id)
 
 
-class RepoCreator:
-    def __init__(self, token_manager: "TokenManagerMother"):
-        self.token_manager = token_manager
-        self.github = Github(token_manager.load_token())
-
-        # self.org = github.get_organization(organization)
-
-    def create_repos(self, count: int, names: str = "G{'0'*(2-len(str(i)))}{i}T3",
-                     description: str = "DS4001 - Group {'0'*(2-len(str(i)))}{i} - Test 3",
-                     collaborators: list = None):
-        # TODO: make names and description arguments work :|
-        assert isinstance(count, int)
-        assert 1 <= count
-        assert isinstance(names, str)
-        assert isinstance(description, str)
-        if not collaborators:
-            collaborators = [[]] * count
-        assert isinstance(collaborators, list)
-        assert len(collaborators) == count
-        for i in range(count):
-            rep = self.org.create_repo(f"G{'0'*(2-len(str(i+1)))}{i+1}T3",
-                                       f"DS4001 - Group {'0'*(2-len(str(i+1)))}{i+1} - Test 3",
-                                       private=True,
-                                       gitignore_template="Python", auto_init=True)
-            for collaborator_name in collaborators[i]:
-                if not collaborator_name:
-                    continue
-                try:
-                    rep.add_to_collaborators(collaborator_name, "maintain")
-                except UnknownObjectException as exc:
-                    print(f"Log: error while adding collaborator at number {i}"
-                          f" - collaborator {collaborator_name} \n Exception:"
-                          f"{repr(exc)}")
-
-
 class TokenManagerMother:
     """
     This is the base class of every TokenManager classes.
@@ -178,3 +143,64 @@ class DSNameGenerator(NameGeneratorMother):
             desc = f"Data Structures - Group {'0' * (2-len(str(x)))}{x} - Test {t}"
             yield name, desc
             x += 1
+
+
+class RepoCreator:
+    def __init__(self, token_manager: TokenManagerMother, logger: LogConsole):
+        self.token_manager = token_manager
+        self.github = Github(token_manager.load_token())
+        self.logger = logger
+
+        # self.org = github.get_organization(organization)
+
+    def get_repo_master_options(self) -> List[str]:
+        res = []
+        x = self.github.get_users()
+        for i in x:
+            res.append(i.name)
+        x = self.github.get_organizations()
+        for i in x:
+            res.append(i.name)
+        return res
+
+    def start(self, count: int, repo_master: str,
+              name_generator: NameGeneratorMother,
+              collaborators: List[List[str]] = None,
+              collaborator_role: str = 'maintain',
+              private: bool = True,
+              template: str = "Python"):
+        """
+        Starts creating repositories in repo master
+        :param count: how many repositories to create
+        :param repo_master: where to create repositories
+        :param name_generator: NameGenerator object to generate names from it
+        :param collaborators: a list containing another list of collaborators for each repo in same order
+        :param collaborator_role: the role of collaborators
+        :param private: whether repository is private or public
+        :param template: the .gitignore template
+        :return: noting
+        """
+        if not collaborators:
+            collaborators = [[]] * count
+        assert isinstance(collaborators, list)
+        assert len(collaborators) == count
+        try:
+            master = self.github.get_organization(repo_master)
+        except UnknownObjectException:
+            try:
+                master = self.github.get_user(repo_master)
+            except UnknownObjectException:
+                self.logger.log("RepoCreator", "Can't get repo master from GitHub. aborting..")
+                return
+        for i, (name, desc) in zip(range(count), name_generator.generate()):
+            rep = master.create_repo(name, desc, private=private,
+                                     gitignore_template=template, auto_init=True)
+            for collaborator_name in collaborators[i]:
+                if not collaborator_name:
+                    continue
+                try:
+                    rep.add_to_collaborators(collaborator_name, collaborator_role)
+                except UnknownObjectException as exc:
+                    self.logger.log("RepoCreator", f"Log: Error while adding collaborator at number {i}"
+                                                   f" - collaborator {collaborator_name} \n Exception:"
+                                                   f"{repr(exc)}")
