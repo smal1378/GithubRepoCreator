@@ -11,7 +11,7 @@ Ver 1.1:<br>
 ### Application Modules:
 - LogConsole: 
 This class is defined in model.py and is added at ver1.1. an object of this class should be created at application 
-start and other parts can attach themselves to this console.
+start and other parts can use this log manager object, creation of this object should be made at 'controller.py'.
 <br> API:
   - get_log(count: int): generator function that returns last 'count' logs. each log is a tuple containing \
 module name and the message.
