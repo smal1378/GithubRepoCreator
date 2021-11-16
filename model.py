@@ -2,9 +2,6 @@ from github import Github
 from github.GithubException import UnknownObjectException
 from keyring import set_password, get_password
 from keyring.errors import InitError
-_name = ""  # just to avoid name not defined error by IDE
-_desc = ""  # same
-keyring_service_name = "PythonRepoCreator"
 
 
 class LogConsole:
@@ -42,10 +39,10 @@ class LogConsole:
 
 
 class RepoCreator:
-    def __init__(self):
-        self.token = None
-        self.load_token()
-        # github = Github(token)
+    def __init__(self, token_manager: "TokenManagerMother"):
+        self.token_manager = token_manager
+        self.github = Github(token_manager.load_token())
+
         # self.org = github.get_organization(organization)
 
     def create_repos(self, count: int, names: str = "G{'0'*(2-len(str(i)))}{i}T3",
@@ -110,24 +107,24 @@ class TokenManagerMother:
 
 
 class TokenManagerKeyring(TokenManagerMother):
-    def __init__(self):
+    keyring_service_name = "PythonRepoCreator"
+
+    def __init__(self, logger: LogConsole):
         self.token = None
+        self.logger = logger
         self.load_token()
 
     def load_token(self, name: str = "Default"):
         try:
-            self.token = get_password(keyring_service_name, "Token")
+            self.token = get_password(self.keyring_service_name, "Token")
         except InitError as err:
-            logger.log("TokenManager", f"Access to keyring denied."
-                                       f"\n{repr(err)}")
+            self.logger.log("TokenManager", f"Access to keyring denied."
+                                            f"\n{repr(err)}")
 
     def set_token(self, token: str, name: str = "Default"):
         self.token = token
-        set_password(keyring_service_name, "Token", token)
-        logger.log("TokenManager", "New token has been set.")
+        set_password(self.keyring_service_name, "Token", token)
+        self.logger.log("TokenManager", "New token has been set.")
 
     def has_token(self, name: str = "Default"):
         return bool(self.token)
-
-
-logger = LogConsole()  # global object that every one use it
