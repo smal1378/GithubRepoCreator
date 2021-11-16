@@ -13,7 +13,8 @@ class LogConsole:
     def get_log(self, count: int = 100):
         x = 0
         for i in range(self.pointer, -1, -1):
-            if i + 1 >= count:
+            x += 1
+            if x >= count:
                 return
             yield self.lst[i]
 
