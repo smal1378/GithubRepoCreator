@@ -110,7 +110,7 @@ class TokenManagerText(TokenManagerMother):
     def load_token(self, name: str = "Default") -> str:
         if self.token:
             return self.token
-        with open("token.txt") as f:
+        with open("token.txt", "r") as f:
             self.token = f.read()
         return self.token
 
