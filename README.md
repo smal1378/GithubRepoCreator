@@ -1,12 +1,23 @@
 # GithubRepoCreator
-A simple python script that creates multiple repositorys in Github. 
+A simple python application to create multiple repository's in GitHub.
 
-----
-Ver 1.0:<br>
-- This version of code is written to just do the main use of this project. This means it is not for public use.
-- "token.txt" is a simple file that your GitHub token should be there.
-- After running "controller.py" if the "token.txt" isn't present in the same directory it'll ask for token. <br>
-Then you should enter how many repos should be created. <br>
-After that it'll ask for organization name and a file name (optional) that contains a list of usernames to be
-invited with "maintain" role to each repository, each line is for one repository starting from first line and 
-each username is separated using a ",".
+
+---
+Ver 1.1:<br>
+- Access token will be saved using "keyring" module for security.
+
+
+---
+### Application Modules:
+- LogConsole: 
+This class is defined in model.py and is added at ver1.1. an object of this class should be created at application 
+start and other parts can attach themselves to this console.
+<br> API:
+  - get_log(count: int): generator function that returns last 'count' logs. each log is a tuple containing \
+module name and the message.
+  - log(module: str, message: str): this method will add new log to console.
+  - attach_callback(callback: Callable): will add the function to callbacks, calls it whenever new log is added.
+also return the id of that callback.
+  - detach_callback(id: int): will remove the callback from callback list.
+- 
+
