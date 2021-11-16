@@ -2,7 +2,7 @@ from github import Github
 from github.GithubException import UnknownObjectException
 from keyring import set_password, get_password
 from keyring.errors import InitError
-from typing import List, Optional, Tuple, Callable
+from typing import List, Optional, Tuple, Callable, Generator
 
 
 class LogConsole:
@@ -134,3 +134,26 @@ class TokenManagerKeyring(TokenManagerMother):
 
     def has_token(self, name: str = "Default") -> bool:
         return bool(self.token)
+
+
+class NameGeneratorMother:
+    # This list contains entries needed for init method args to be passed.
+    # For each entry a Tuple of 'entry name' and 'entry description' should be in list.
+    # Currently only strings can be taken from user.
+    entries: List[Tuple[str, str]] = []
+
+    def __init__(self, **kwargs):
+        """
+        This is the mother class of 'name' and 'description' generator classes.
+        These classes are used to generate name for new repositories.
+        controller.py should automatically allow users to choose between all subclasses of this class.
+        :param kwargs: all entries that described in entries attribute will be passed as kwargs
+        """
+        raise NotImplemented
+
+    def generate(self) -> Generator[Tuple[str, str]]:
+        """
+        This is a generator function that return each repository 'name' and 'description'
+        :return: a generator that contains tuples of 'name' and 'description'
+        """
+        raise NotImplemented
