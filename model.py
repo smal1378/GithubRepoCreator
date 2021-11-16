@@ -75,19 +75,58 @@ class RepoCreator:
                           f" - collaborator {collaborator_name} \n Exception:"
                           f"{repr(exc)}")
 
-    def load_token(self):
+
+class TokenManagerMother:
+    """
+    This is the base class of every TokenManager classes.
+    Every Classes that is going to manage the way that token is being saved or loaded should
+    inherit this class and implement 'load_token', 'set_token' and 'has_token' methods.
+    """
+    def load_token(self, name: str = "Default") -> str:
+        """
+        returns the user token.
+        caching token in an attribute would make the class faster.
+        :param name:  usually this param is not going to be used, if you want to add multiple tokens name is the key
+        :return: GitHub token
+        """
+        raise NotImplemented
+
+    def set_token(self, token: str, name: str = "Default") -> None:
+        """
+        is called whenever user wants to set or update the token.
+        :param token: this is the new token
+        :param name: usually this param is not going to be used, if you want to add multiple tokens name is the key
+        :return: nothing
+        """
+        raise NotImplemented
+
+    def has_token(self, name: str = "Default") -> bool:
+        """
+        Whether token exists or not.
+        :param name:  usually this param is not going to be used, if you want to add multiple tokens name is the key
+        :return: True if token exists, otherwise False
+        """
+        raise NotImplemented
+
+
+class TokenManagerKeyring(TokenManagerMother):
+    def __init__(self):
+        self.token = None
+        self.load_token()
+
+    def load_token(self, name: str = "Default"):
         try:
             self.token = get_password(keyring_service_name, "Token")
         except InitError as err:
             logger.log("TokenManager", f"Access to keyring denied."
                                        f"\n{repr(err)}")
 
-    def set_token(self, token: str):
+    def set_token(self, token: str, name: str = "Default"):
         self.token = token
         set_password(keyring_service_name, "Token", token)
         logger.log("TokenManager", "New token has been set.")
 
-    def has_token(self):
+    def has_token(self, name: str = "Default"):
         return bool(self.token)
 
 
