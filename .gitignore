@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 token.txt
 collaborators.txt
+data.bin
 # C extensions
 *.so
 
