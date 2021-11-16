@@ -141,6 +141,7 @@ class NameGeneratorMother:
     # For each entry a Tuple of 'entry name' and 'entry description' should be in list.
     # Currently only strings can be taken from user.
     entries: List[Tuple[str, str]] = []
+    name: str = ""  # name of the option that the user can choose between options
 
     def __init__(self, **kwargs):
         """
