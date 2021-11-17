@@ -1,11 +1,7 @@
 # GithubRepoCreator
-A simple python application to create multiple repository's in GitHub.
+A simple python application for creating multiple repository's in GitHub.
 
-
----
-Ver 1.1:<br>
-- Access token will be saved using "keyring" module for security.
-
+## Ver 1.1<br>
 
 ---
 ### Application Modules:
