@@ -108,10 +108,9 @@ class TokenManagerText(TokenManagerMother):
         self.load_token()
 
     def load_token(self, name: str = "Default") -> str:
-        if self.token:
-            return self.token
-        with open("token.txt", "r") as f:
-            self.token = f.read()
+        if exists("token.txt") and not self.token:
+            with open("token.txt", "r") as f:
+                self.token = f.read()
         return self.token
 
     def set_token(self, token: str, name: str = "Default") -> None:
