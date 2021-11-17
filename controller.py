@@ -1,20 +1,39 @@
+from typing import Optional
+from model import RepoCreator, TokenManagerMother, TokenManagerText
 from os.path import exists
-from model import RepoCreator
+from view import AskString, UserPanel
+from db import SimpleDB
+from pickle import load
+# load data from file or create if it's first time
 
-# Get or Load token
-if exists("token.txt"):
-    with open("token.txt") as f:
-        token = f.read()
+if exists("db_class.bin"):
+    with open("db_class.bin", "rb") as f:
+        Db = load(f)
 else:
-    token = input("Please Enter your token:")
-    with open("token.txt") as f:
-        f.write(token)
+    Db = SimpleDB
+appdata = Db()
 
-count = int(input("Count:"))
-org_name = input("Organization Name:")
-if not org_name:
+
+def exit_app():
+    appdata.save()
     exit()
-users = input("Users file list name (or empty):")
+
+
+user = UserPanel()
+
+if "TokenManager" not in appdata:
+    appdata["TokenManager"] = TokenManagerText
+token_manager: TokenManagerMother = appdata["TokenManager"]()
+if not token_manager.has_token():
+    token = AskString(user, "Please create a token in GitHub and enter it here:",
+                      "Ask For Token").get_answer()
+    if token:
+        token_manager.set_token(token)
+    else:
+        exit_app()
+
+
+"""users = input("Users file list name (or empty):")
 users_lst = []
 if users:
     with open(users) as f:
@@ -24,6 +43,4 @@ if users:
                 lst[index] = name.strip()
             users_lst.append(lst)
 if not users_lst:
-    users_lst = None
-x = RepoCreator(token, org_name)
-x.create_repos(count, collaborators=users_lst)
+    users_lst = None"""
