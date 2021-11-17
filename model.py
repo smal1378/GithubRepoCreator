@@ -2,7 +2,7 @@ from github import Github
 from github.GithubException import UnknownObjectException
 from keyring import set_password, get_password
 from keyring.errors import InitError
-from typing import List, Optional, Tuple, Callable, Generator
+from typing import List, Optional, Tuple, Callable, Iterator
 from os.path import exists
 
 
@@ -139,7 +139,7 @@ class NameGeneratorMother:
         """
         raise NotImplemented
 
-    def generate(self) -> Generator[Tuple[str, str]]:
+    def generate(self) -> Iterator[Tuple[str, str]]:
         """
         This is a generator function that return each repository 'name' and 'description'
         :return: a generator that contains tuples of 'name' and 'description'
@@ -157,7 +157,7 @@ class DSNameGenerator(NameGeneratorMother):
         self.start = int(kwargs["Start"])
         self.test = int(kwargs["Test"])
 
-    def generate(self) -> Generator[Tuple[str, str]]:
+    def generate(self) -> Iterator[Tuple[str, str]]:
         x = self.start
         t = self.test
         while True:
