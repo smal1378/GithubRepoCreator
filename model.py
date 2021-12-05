@@ -233,7 +233,7 @@ class CollaboratorManagerMother:
 
 
 class CsvCollaboratorManager(CollaboratorManagerMother):
-    fields = {"file", "File name that contains collaborators github id"}
+    fields = {"file": "File name that contains collaborators github id"}
     name = "Simple CSV File"
 
     # noinspection PyMissingConstructor
