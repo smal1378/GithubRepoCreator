@@ -232,6 +232,9 @@ class CollaboratorManagerMother:
     fields = {}
     name = ""  # name of this collaborator manager
 
+    def __init__(self, **kwargs):
+        raise NotImplemented
+
     def get(self) -> List[List[str]]:
         """
         :return: A list containing collaborators for each repo
@@ -243,6 +246,7 @@ class CsvCollaboratorManager(CollaboratorManagerMother):
     fields = {"file", "File name that contains collaborators github id"}
     name = "Simple CSV File"
 
+    # noinspection PyMissingConstructor
     def __init__(self, file: str):
         self.file = file
 
