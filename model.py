@@ -114,7 +114,7 @@ class TokenManagerText(TokenManagerMother):
         return self.token
 
     def set_token(self, token: str, name: str = "Default") -> None:
-        with open("token.txt") as f:
+        with open("token.txt", "w") as f:
             f.write(token)
         self.token = token
 
