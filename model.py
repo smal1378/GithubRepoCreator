@@ -211,7 +211,7 @@ class RepoCreator:
             try:
                 master = self.github.get_user(repo_master)
             except UnknownObjectException:
-                self.logger.log("RepoCreator", "Can't get repo master from GitHub. aborting..")
+                self.logger.log("RepoCreator", f"Can't get repo master '{repo_master}' from GitHub. aborting..")
                 return
         for i, (name, desc) in zip(range(count), name_generator.generate()):
             rep = master.create_repo(name, desc, private=private,
@@ -225,3 +225,33 @@ class RepoCreator:
                     self.logger.log("RepoCreator", f"Log: Error while adding collaborator at number {i}"
                                                    f" - collaborator {collaborator_name} \n Exception:"
                                                    f"{repr(exc)}")
+
+
+class CollaboratorManagerMother:
+    # below dict is field names and description that are going to be taken from user.
+    fields = {}
+    name = ""  # name of this collaborator manager
+
+    def get(self) -> List[List[str]]:
+        """
+        :return: A list containing collaborators for each repo
+        """
+        raise NotImplemented
+
+
+class CsvCollaboratorManager(CollaboratorManagerMother):
+    fields = {"file", "File name that contains collaborators github id"}
+    name = "Simple CSV File"
+
+    def __init__(self, file: str):
+        self.file = file
+
+    def get(self) -> List[List[str]]:
+        users = []
+        with open(self.file) as f:
+            for i in f:
+                lst = i.split(",")
+                for index, name in zip(range(len(lst)), lst):
+                    lst[index] = name.strip()
+                users.append(lst)
+        return users
