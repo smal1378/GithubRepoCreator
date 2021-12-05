@@ -194,7 +194,7 @@ class RepoCreator:
         if not collaborators:
             collaborators = [[]] * count
         assert isinstance(collaborators, list)
-        assert len(collaborators) == count
+        assert len(collaborators) >= count
         if repo_master == "":
             master = self.github.get_user()
         else:
