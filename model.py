@@ -174,16 +174,6 @@ class RepoCreator:
 
         # self.org = github.get_organization(organization)
 
-    def get_repo_master_options(self) -> List[str]:
-        res = []
-        x = self.github.get_users()
-        for i in x:
-            res.append(i.name)
-        x = self.github.get_organizations()
-        for i in x:
-            res.append(i.name)
-        return res
-
     def start(self, count: int, repo_master: str,
               name_generator: NameGeneratorMother,
               collaborators: List[List[str]] = None,
@@ -209,7 +199,7 @@ class RepoCreator:
             master = self.github.get_organization(repo_master)
         except UnknownObjectException:
             try:
-                master = self.github.get_user(repo_master)
+                master = self.github.get_user()
             except UnknownObjectException:
                 self.logger.log("RepoCreator", f"Can't get repo master '{repo_master}' from GitHub. aborting..")
                 return
