@@ -154,7 +154,7 @@ class DSNameGenerator(NameGeneratorMother):
     # noinspection PyMissingConstructor
     def __init__(self, **kwargs):
         self.start = int(kwargs["Start"])
-        self.test = int(kwargs["Test"])
+        self.test = kwargs["Test"]
 
     def generate(self) -> Iterator[Tuple[str, str]]:
         x = self.start
