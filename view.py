@@ -24,46 +24,36 @@ class DefaultTheme(ThemeMother):
 
     class Tk(ThemeMother.Tk):
         def __init__(self):
-            super(ThemeMother.Tk, self).__init__()
+            super().__init__()
             self.config(bg="white")
 
     class Toplevel(ThemeMother.Toplevel):
         def __init__(self, master):
-            super(ThemeMother.Toplevel, self).__init__(master)
+            super().__init__(master)
             self.config(bg="white")
 
 
-# After all themes has defined:
-if exists("db_class.bin"):
-    with open("db_class.bin", "rb") as f:
-        Db = load(f)
-else:
-    Db = SimpleDB
-appdata = Db()
-if "Theme" in appdata:
-    Theme = appdata["Theme"]
-else:
-    Theme = DefaultTheme
+Theme = ThemeMother  # This is the Theme
 
 
 class AskString(Theme.Toplevel):
     def __init__(self, master, message: str = "", title: str = "Input"):
-        super(Theme.Toplevel, self).__init__(master)
-        self._res = ""
+        super().__init__(master)
+        self._res = None
         self.title(title)
         self.columnconfigure(1, weight=1)
         Theme.Label(self, text=message).grid(row=1, column=1, pady=5)
         self._ent = Theme.Entry(self, width=40)
         self._ent.grid(row=2, column=1, pady=8)
         Theme.Button(self, text="Okay", command=self._okay).grid(row=3, column=1, pady=5)
-        self.bind("<Enter>", lambda e: self._okay())
+        self.bind("<Return>", lambda e: self._okay())
 
     def _okay(self):
         self._res = self._ent.get()
         self.destroy()
 
     def get_answer(self):
-        self.winfo_ismapped() and self.wait_window()
+        self._res is None and self.wait_window()
         return self._res
 
 
