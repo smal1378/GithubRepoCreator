@@ -195,11 +195,11 @@ class RepoCreator:
             collaborators = [[]] * count
         assert isinstance(collaborators, list)
         assert len(collaborators) == count
-        try:
-            master = self.github.get_organization(repo_master)
-        except UnknownObjectException:
+        if repo_master == "":
+            master = self.github.get_user()
+        else:
             try:
-                master = self.github.get_user()
+                master = self.github.get_organization(repo_master)
             except UnknownObjectException:
                 self.logger.log("RepoCreator", f"Can't get repo master '{repo_master}' from GitHub. aborting..")
                 return
