@@ -1,4 +1,3 @@
-from typing import Optional
 from model import RepoCreator, TokenManagerMother, TokenManagerText
 from os.path import exists
 from view import AskString, UserPanel
@@ -32,15 +31,4 @@ if not token_manager.has_token():
     else:
         exit_app()
 
-
-"""users = input("Users file list name (or empty):")
-users_lst = []
-if users:
-    with open(users) as f:
-        for i in f:
-            lst = i.split(",")
-            for index, name in zip(range(len(lst)), lst):
-                lst[index] = name.strip()
-            users_lst.append(lst)
-if not users_lst:
-    users_lst = None"""
+user.mainloop()
