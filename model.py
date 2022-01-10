@@ -166,6 +166,26 @@ class DSNameGenerator(NameGeneratorMother):
             x += 1
 
 
+class PishrafteNameGenerator(NameGeneratorMother):
+    name = "Pishrafte Template"
+    entries = [("Start", "An integer that numbering starts from"),
+               ("Test", "Test number")]
+
+    # noinspection PyMissingConstructor
+    def __init__(self, **kwargs):
+        self.start = int(kwargs["Start"])
+        self.test = kwargs["Test"]
+
+    def generate(self) -> Iterator[Tuple[str, str]]:
+        x = self.start
+        t = self.test
+        while True:
+            name = f"G{'0' * (2-len(str(x)))}{x}T{t}"
+            desc = f"Pishrafte - Group {'0' * (2-len(str(x)))}{x} - {t}"
+            yield name, desc
+            x += 1
+
+
 class RepoCreator:
     def __init__(self, token_manager: TokenManagerMother, logger: LogConsole):
         self.token_manager = token_manager
